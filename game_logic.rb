@@ -20,7 +20,6 @@ class Game
       print 'Enter your name: '
       @player.name = gets.chomp
     end
-    puts
   end
 
   def ask_action
@@ -29,10 +28,11 @@ class Game
       begin
         choice = gets.chomp
         case choice
-          when '0'  then show_menu
-          when '1'  then deal_cards
-          when '2'  then take_card
-          when '3'  then stand
+          when '0' then show_menu
+          when '1' then deal_cards
+          when '2' then take_card
+          when '3' then stand
+          when '4' then open_cards
           when 'exit' then exit
         end
       rescue => e
@@ -49,6 +49,7 @@ class Game
     puts '1 - Deal cards'
     puts '2 - Take a card'
     puts '3 - Pass the move to the Dealer'
+    puts '4 - Open cards'
     puts
   end
 
@@ -130,12 +131,14 @@ class Game
   end
 
   def open_cards
-    if @dealer.get_cards_value == @player.get_cards_value
+    if @dealer.get_cards_value == @player.get_cards_value && @dealer.get_cards_value > 0
       stand_off
     elsif @dealer.get_cards_value < @player.get_cards_value
       player_winner
-    else
+    elsif @dealer.get_cards_value > @player.get_cards_value
       dealer_winner
+    else
+      puts "it's not time yet for openning cards"
     end
     game_ended = true
   end
