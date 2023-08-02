@@ -1,22 +1,26 @@
 require_relative 'card'
+require_relative 'constants'
 
 class Deck
+  include Constants
   def initialize
-    @deck = []
-    Card.suits.each do |suit|
-      Card.ranks.each do |rank|
-        @deck << Card.new(suit, rank)
-      end
-    end
+    @deck = create_deck
+    shuffle
+  end
+
+  def create_deck
+    SUITS.map{|suit| RANKS.map{|rank| Card.new(suit, rank)}}.flatten
   end
 
   def shuffle
     @deck.shuffle!
   end
 
-  def deal_card
+  def give_card
     # deal a card object from the deck
     @deck.pop
   end
-
+  def show_deck
+    @deck.length
+  end
 end

@@ -1,7 +1,7 @@
 class Bank
     attr_reader :amount
   
-    def initialize(initial_amount=0)
+    def initialize(initial_amount = 0)
       @initial_amount = initial_amount
       @amount = initial_amount
     end

@@ -13,10 +13,6 @@ class Player
     @name  = nil
   end
 
-  def to_s
-    "has cards: #{@cards.join( ',')}"
-  end
-
   def add_card(card)
     @cards << card
   end
@@ -26,7 +22,7 @@ class Player
   end
 
   def get_cards_value
-    # count aces as 1, if the hand has an ace, then add 10 to hand value if it doesn't bust compute the value of the hand
+    # count the aces as 1 if there is an ace in the hand, then add 10 to the value of the hand if this does not help calculate the value of the hand
     total_value = 0
     @cards.each do |card|
       total_value += VALUES[card.rank]
@@ -49,7 +45,11 @@ class Player
     @cards.count {|c| c.rank == "A"}
   end
 
+  def show_cards
+    @cards.map { |card| card }.join(',')
+  end
+
   def show_cards_as_hidden
-    @cards.map { |el| el = '*'}.join(',')
+    @cards.map { |card| card = '*'}.join(',')
   end
 end
