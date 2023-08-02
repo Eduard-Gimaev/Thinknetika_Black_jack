@@ -60,11 +60,10 @@ class Game
       first_bet
       show_banks
       puts "=" * 30
-      show_cards_and_values
+      show_cards_and_values_hide
       puts "=" * 30
     else
       puts "The game in the process...."
-
       ask_action
     end
   end
@@ -76,21 +75,27 @@ class Game
     puts
   end
   def first_bet
-    @dealer.bank.withdraw(10)
-    @dealer.bank.withdraw(10)
-    @game_bank.replenish(20)
+    @dealer.bank.withdraw(5)
+    @dealer.bank.withdraw(5)
+    @game_bank.replenish(10)
   end
 
   def show_cards_and_values
     puts "#{@player.name}'s cards #{@player.show_cards} - (#{@player.get_cards_value})"
-    puts "Dealer's card: #{@dealer.show_cards_as_hidden} - (#{@dealer.get_cards_value})"
+    puts "Dealer's card: #{@dealer.show_cards} - (#{@dealer.get_cards_value})"
+    puts
+  end
+
+  def show_cards_and_values_hide
+    puts "#{@player.name}'s cards #{@player.show_cards} - (#{@player.get_cards_value})"
+    puts "Dealer's card: #{@dealer.show_cards_as_hidden} - (**)"
     puts
   end
 
   def take_card
     if @player.cards.count < MAX_ALLOWED_CARDS && @player.get_cards_value <= MAX_SCORE
       @player.add_card(@deck.give_card)
-      show_cards_and_values
+      show_cards_and_values_hide
       if @player.get_cards_value > 21
         puts "You're burned out!"
         dealer_winner
@@ -107,7 +112,7 @@ class Game
     puts "Dealer's move >>\n\n"
       if @dealer.get_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
         @dealer.add_card(@deck.give_card)
-        show_cards_and_values
+        show_cards_and_values_hide
         player_winner if @dealer.get_cards_value > 21
       else
         open_cards
@@ -127,6 +132,7 @@ class Game
     @dealer.reset_cards
     @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     puts "Player won the game!"
+    puts "=" * 30
     show_banks
   end
 
@@ -149,13 +155,14 @@ class Game
     else
       puts "it's not time yet for openning cards"
     end
+    show_cards_and_values
     game_ended = true
+    check_game_ended
   end
 
-
-  #def add_cards_to(player_type, quantity)
-    #quantity.times { player_type.add_card(@deck.give_card) }
-  #end
+  def game_ended?
+    @game_ended
+  end
 
   def restart!
     @game_bank.reset
