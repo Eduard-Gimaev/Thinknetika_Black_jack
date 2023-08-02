@@ -8,7 +8,6 @@ class Game
   include Constants
   
   def initialize
-    @in_play    = false
     @player     = Player.new
     @dealer     = Player.new
     @deck       = Deck.new
@@ -17,8 +16,11 @@ class Game
   end
 
   def ask_user_name
-    puts 'Enter your name: '
-    @player.name = gets.chomp.capitalize
+    while @player.name.empty? do
+      print 'Enter your name: '
+      @player.name = gets.chomp
+    end
+    puts
   end
 
   def ask_action
@@ -56,7 +58,7 @@ class Game
       2.times { @dealer.cards << @deck.give_card }
       show_banks
       show_cards_and_values
-      puts "=" * 10
+      puts "=" * 30
     else
       puts "Finish current game first"
       ask_action
@@ -76,113 +78,78 @@ class Game
     puts
   end
 
-
-
-
-
-
-
-
-
   def take_card
-    check_game_ended
-    # Add cards to player when he decides to get one more card
-    if @player.cards.count < MAX_ALLOWED_CARDS && in_play?
-      if @player.get_cards_value <= MAX_SCORE
-        @player.add_card(@deck.give_card)
-
-        show_players_cards_and_values
-
-        if @player.get_cards_value > 21
-          @in_play = false
-          @player.reset_cards
-          @dealer.reset_cards
-          @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))  # Dealer takes all game's bank_amount
-          puts "You lost!"
-          show_players_bank_amount
-          check_players_empty_bank
-        elsif @player.cards.count >= MAX_ALLOWED_CARDS
-          stand # the move switched to Dealer
-        end
+    if @player.cards.count < MAX_ALLOWED_CARDS && @player.get_cards_value <= MAX_SCORE
+      @player.add_card(@deck.give_card)
+      show_cards_and_values
+      if @player.get_cards_value > 21
+        dealer_winner
+      elsif @player.cards.count >= MAX_ALLOWED_CARDS
+      stand # the move switched to Dealer
       end
     else
-      puts "The game has not started yet." if @player.cards.count >= MAX_ALLOWED_CARDS || !@in_play
+      puts "Sorry, you cannot take a card"
+      puts "=" * 30
     end
   end
 
   def stand
-    check_game_ended
-    # Opening cards and count values
-    if in_play?
-      puts "Dealer's move >>\n\n"
-
-      while @dealer.get_cards_value < 17
-        if @dealer.cards.count < MAX_ALLOWED_CARDS
-          @dealer.add_card(@deck.give_card)
-        else
-          break
-        end
-      end
-
-      show_players_cards_and_values
-
-      if @dealer.get_cards_value > 21
-        @in_play = false
-        @player.reset_cards
-        @dealer.reset_cards
-        @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))  # Player takes all game's bank_amount
-        puts "Dealer lost:)"
-      elsif @player.get_cards_value > 21
-        @in_play = false
-        @player.reset_cards
-        @dealer.reset_cards
-        @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))  # Dealer takes all game's bank_amount
-        puts "You lost!"
-      elsif @dealer.get_cards_value == @player.get_cards_value
-        half_bank = @game_bank.amount / 2
-        @in_play = false
-        @player.reset_cards
-        @dealer.reset_cards
-        @player.bank.replenish(@game_bank.withdraw(half_bank))
-        @dealer.bank.replenish(@game_bank.withdraw(half_bank))
-        puts "Stand-off!"
-      elsif @dealer.get_cards_value < @player.get_cards_value
-        @in_play = false
-        @player.reset_cards
-        @dealer.reset_cards
-        @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))  # Player takes all game's bank_amount
-        puts "Dealer lost:)"
+    puts "Dealer's move >>\n\n"
+      if @dealer.get_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
+        @dealer.add_card(@deck.give_card)
+        show_cards_and_values
+        player_winner if @dealer.get_cards_value > 21
       else
-        @in_play = false
-        @player.reset_cards
-        @dealer.reset_cards
-        @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))  # Dealer takes all game's bank_amount
-        puts "Dealer lost!"
+        open_cards
       end
-      show_players_bank_amount
-      check_players_empty_bank
+  end
+
+  def dealer_winner
+    @player.reset_cards
+    @dealer.reset_cards
+    @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))
+    puts "Dealer won the game!"
+    show_banks
+  end
+
+  def player_winner
+    @player.reset_cards
+    @dealer.reset_cards
+    @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))
+    puts "Player won the game!"
+    show_banks
+  end
+
+  def stand_off
+    half_bank = @game_bank.amount / 2
+    @player.reset_cards
+    @dealer.reset_cards
+    @player.bank.replenish(@game_bank.withdraw(half_bank))
+    @dealer.bank.replenish(@game_bank.withdraw(half_bank))
+    puts "Stand-off!"
+  end
+
+  def open_cards
+    if @dealer.get_cards_value == @player.get_cards_value
+      stand_off
+    elsif @dealer.get_cards_value < @player.get_cards_value
+      player_winner
     else
-      puts "The game has not started yet."
+      dealer_winner
     end
+    game_ended = true
   end
 
-  def in_play?
-    @in_play
-  end
 
-  def game_ended?
-    @game_ended
-  end
-
-  def add_cards_to(player_type, quantity)
-    quantity.times { player_type.add_card(@deck.give_card) }
-  end
-
+  #def add_cards_to(player_type, quantity)
+    #quantity.times { player_type.add_card(@deck.give_card) }
+  #end
 
   def restart!
     @game_bank.reset
     @player.bank.reset
     @dealer.bank.reset
+    show_menu
   end
 
   def check_game_ended
@@ -190,28 +157,12 @@ class Game
       puts 'The game is over!'
       puts 'Would you like to play again? (Y/N)'
       choice = gets.chomp.downcase
-
       if choice == 'y'
         restart!
-        puts "Restart is done.\n\n"
       else
         puts 'GAME OVER'
         exit(0)
       end
     end
-  end
-
-  def check_players_empty_bank
-    player_amount = @player.bank.amount
-    dealer_amount = @dealer.bank.amount
-
-    if player_amount == 0 && dealer_amount > player_amount
-      @game_ended = true
-      puts "Dealer won. #{@player.name} bank  empty.\n\n"
-    elsif dealer_amount == 0 && player_amount > dealer_amount
-      puts "#{@player.name} won. Dealer's bank is empty.\n\n"
-      @game_ended = true
-    end
-    deal_cards
   end
 end
