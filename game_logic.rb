@@ -57,11 +57,14 @@ class Game
     if @player.cards == [] && @dealer.cards == []
       2.times { @player.cards << @deck.give_card }
       2.times { @dealer.cards << @deck.give_card }
+      first_bet
       show_banks
+      puts "=" * 30
       show_cards_and_values
       puts "=" * 30
     else
-      puts "Finish current game first"
+      puts "The game in the process...."
+
       ask_action
     end
   end
@@ -71,6 +74,11 @@ class Game
     puts "Dealer's bank: #{@dealer.bank.amount}"
     puts "Game's bank: #{@game_bank.amount}"
     puts
+  end
+  def first_bet
+    @dealer.bank.withdraw(10)
+    @dealer.bank.withdraw(10)
+    @game_bank.replenish(20)
   end
 
   def show_cards_and_values
@@ -84,6 +92,7 @@ class Game
       @player.add_card(@deck.give_card)
       show_cards_and_values
       if @player.get_cards_value > 21
+        puts "You're burned out!"
         dealer_winner
       elsif @player.cards.count >= MAX_ALLOWED_CARDS
       stand # the move switched to Dealer
