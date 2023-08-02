@@ -17,9 +17,9 @@ class Deck
   end
 
   def give_card
-    # deal a card object from the deck
     @deck.pop
   end
+  
   def show_deck
     @deck.length
   end

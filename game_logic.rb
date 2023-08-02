@@ -11,13 +11,14 @@ class Game
     @in_play    = false
     @player     = Player.new
     @dealer     = Player.new
+    @deck       = Deck.new
     @game_bank  = Bank.new(0)
     @game_ended = false
   end
 
   def ask_user_name
     puts 'Enter your name: '
-    @player.name = gets.chomp
+    @player.name = gets.chomp.capitalize
   end
 
   def ask_action
@@ -50,12 +51,16 @@ class Game
   end
 
   def deal_cards
-    #check_game_ended
-    @in_play = true
-    puts 'All bets have been done:'
-    show_banks
-    show_cards_and_values
-    puts "Put 2 - Take a card; 3 - Pass the move to the Dealer)"
+    if @player.cards == [] && @dealer.cards == []
+      2.times { @player.cards << @deck.give_card }
+      2.times { @dealer.cards << @deck.give_card }
+      show_banks
+      show_cards_and_values
+      puts "=" * 10
+    else
+      puts "Finish current game first"
+      ask_action
+    end
   end
 
   def show_banks

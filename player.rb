@@ -45,11 +45,12 @@ class Player
     @cards.count {|c| c.rank == "A"}
   end
 
+
   def show_cards
-    @cards.map { |card| card }.join(',')
+    @cards.map { |card| card }.join('|')
   end
 
   def show_cards_as_hidden
-    @cards.map { |card| card = '*'}.join(',')
+    @cards.map { |card| card = '*'}.join('')
   end
 end
