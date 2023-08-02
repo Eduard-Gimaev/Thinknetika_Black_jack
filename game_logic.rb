@@ -59,7 +59,6 @@ class Game
       2.times { @dealer.cards << @deck.give_card }
       first_bet
       show_banks
-      puts "=" * 30
       show_cards_and_values_hide
       puts "=" * 30
     else
@@ -72,7 +71,7 @@ class Game
     puts "#{@player.name} bank: #{@player.bank.amount}"
     puts "Dealer's bank: #{@dealer.bank.amount}"
     puts "Game's bank: #{@game_bank.amount}"
-    puts
+    puts "=" * 30
   end
   def first_bet
     @dealer.bank.withdraw(5)
@@ -113,7 +112,9 @@ class Game
       if @dealer.get_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
         @dealer.add_card(@deck.give_card)
         show_cards_and_values_hide
-        player_winner if @dealer.get_cards_value > 21
+        open_cards if @dealer.cards.count == MAX_ALLOWED_CARDS && @player.cards.count == MAX_ALLOWED_CARDS
+      elsif @dealer.get_cards_value > 21
+        player_winner 
       else
         open_cards
       end
@@ -124,7 +125,11 @@ class Game
     @dealer.reset_cards
     @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     puts "Dealer won the game!"
+    puts "=" * 30
     show_banks
+    show_cards_and_values
+    puts "=" * 3
+    check_game_ended(true)
   end
 
   def player_winner
@@ -134,6 +139,9 @@ class Game
     puts "Player won the game!"
     puts "=" * 30
     show_banks
+    show_cards_and_values
+    puts "=" * 30
+    check_game_ended(true)
   end
 
   def stand_off
@@ -155,12 +163,11 @@ class Game
     else
       puts "it's not time yet for openning cards"
     end
-    show_cards_and_values
-    game_ended = true
-    check_game_ended
+    check_game_ended(true)
   end
 
-  def game_ended?
+  def game_ended?(value)
+    @game_ended = value
     @game_ended
   end
 
@@ -171,8 +178,8 @@ class Game
     show_menu
   end
 
-  def check_game_ended
-    if game_ended?
+  def check_game_ended(value)
+    if game_ended?(value)
       puts 'The game is over!'
       puts 'Would you like to play again? (Y/N)'
       choice = gets.chomp.downcase
