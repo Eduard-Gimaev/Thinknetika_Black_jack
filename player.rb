@@ -41,7 +41,7 @@ class Player
   end
 
   def show_cards
-    @cards.map { |card| card }.join('|')
+    @cards.map { |card| card = "#{card.rank}#{card.suit}" }.join('|')
   end
 
   def show_cards_as_hidden

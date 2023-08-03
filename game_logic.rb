@@ -121,25 +121,21 @@ class Game
   end
 
   def dealer_winner
-    @player.reset_cards
-    @dealer.reset_cards
-    @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     puts "Dealer won the game!"
     puts "=" * 30
     show_banks
     show_cards_and_values
+    @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     puts "=" * 3
     check_game_ended(true)
   end
 
   def player_winner
-    @player.reset_cards
-    @dealer.reset_cards
-    @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     puts "Player won the game!"
     puts "=" * 30
     show_banks
     show_cards_and_values
+    @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     puts "=" * 30
     check_game_ended(true)
   end
@@ -175,12 +171,16 @@ class Game
     @game_bank.reset
     @player.bank.reset
     @dealer.bank.reset
-    show_menu
+    puts "=" * 30
+    puts "Let's start a new game..."
+    puts "=" * 30
+    ask_action
   end
 
   def check_game_ended(value)
     if game_ended?(value)
       puts 'The game is over!'
+      puts
       puts 'Would you like to play again? (Y/N)'
       choice = gets.chomp.downcase
       if choice == 'y'
