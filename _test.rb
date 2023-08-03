@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'game_logic'
 require_relative 'bank'
 require_relative 'card'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'bank'
 require_relative 'constants'
 
@@ -25,26 +27,22 @@ class Player
     @cards.count { |c| c.rank == 'A' }
   end
 
-  def get_cards_value
+  def show_cards_value
     total_value = 0
     aces_quantity = count_aces
-    if aces_quantity == 0
-      @cards.each do |card|
-        total_value += VALUES[card.rank]
-      end
+    if aces_quantity.zero?
+      @cards.each { |card| total_value += VALUES[card.rank] }
     else
-      aces_quantity.times do
-        total_value += 10 if total_value + 10 <= 21
-      end
+      aces_quantity.times { total_value += 10 if total_value + 10 <= 21 }
     end
     total_value
   end
 
   def show_cards
-    @cards.map { |card| card = "#{card.rank}#{card.suit}" }.join('|')
+    @cards.map { |card| "#{card.rank}#{card.suit}" }.join('|')
   end
 
   def show_cards_as_hidden
-    @cards.map { |_card| card = '*' }.join('')
+    @cards.map { |_card| '*' }.join('')
   end
 end

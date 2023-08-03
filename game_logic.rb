@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'constants'
 require_relative 'card'
 require_relative 'deck'
@@ -81,26 +83,26 @@ class Game
   end
 
   def show_cards_and_values
-    puts "#{@player.name}'s cards #{@player.show_cards} - (#{@player.get_cards_value})"
-    puts "Dealer's card: #{@dealer.show_cards} - (#{@dealer.get_cards_value})"
+    puts "#{@player.name}'s cards #{@player.show_cards} - (#{@player.show_cards_value})"
+    puts "Dealer's card: #{@dealer.show_cards} - (#{@dealer.show_cards_value})"
   end
 
   def show_cards_and_values_hide
-    puts "#{@player.name}'s cards #{@player.show_cards} - (#{@player.get_cards_value})"
+    puts "#{@player.name}'s cards #{@player.show_cards} - (#{@player.show_cards_value})"
     puts "Dealer's card: #{@dealer.show_cards_as_hidden} - (**)"
   end
 
   def take_card
-    if @player.cards.count < MAX_ALLOWED_CARDS && @player.get_cards_value <= MAX_SCORE && @player.cards.count > 1
+    if @player.cards.count < MAX_ALLOWED_CARDS && @player.show_cards_value <= MAX_SCORE && @player.cards.count > 1
       @player.add_card(@deck.give_card)
       show_cards_and_values_hide
-      if @player.get_cards_value > 21
+      if @player.show_cards_value > 21
         puts "You're burned out!"
         dealer_winner
       elsif @player.cards.count >= MAX_ALLOWED_CARDS
         stand # the move switched to Dealer
       end
-    elsif @player.get_cards_value < 1
+    elsif @player.show_cards_value < 1
       puts 'Deal cards first, you cannot take a card now'
       puts '=' * 30
     else
@@ -111,11 +113,11 @@ class Game
 
   def stand
     puts "Dealer's move >>\n\n"
-    if @dealer.get_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
+    if @dealer.show_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
       @dealer.add_card(@deck.give_card)
       show_cards_and_values_hide
       open_cards if @dealer.cards.count == MAX_ALLOWED_CARDS && @player.cards.count == MAX_ALLOWED_CARDS
-    elsif @dealer.get_cards_value > 21
+    elsif @dealer.show_cards_value > 21
       player_winner
     else
       open_cards
@@ -157,11 +159,11 @@ class Game
   end
 
   def open_cards
-    if @dealer.get_cards_value == @player.get_cards_value && @dealer.get_cards_value > 0
+    if @dealer.show_cards_value == @player.show_cards_value && @dealer.show_cards_value.positive?
       stand_off
-    elsif @dealer.get_cards_value < @player.get_cards_value
+    elsif @dealer.show_cards_value < @player.show_cards_value
       player_winner
-    elsif @dealer.get_cards_value > @player.get_cards_value
+    elsif @dealer.show_cards_value > @player.show_cards_value
       dealer_winner
     else
       puts "it's not time yet for openning cards"
@@ -199,11 +201,11 @@ class Game
   end
 
   def check_game_ended(value)
-    if game_ended?(value) == true && @player.bank.amount > 0 && @dealer.bank.amount > 0
+    if game_ended?(value) == true && @player.bank.amount.positive? && @dealer.bank.amount.positive?
       game_over
-    elsif @player.bank.amount == 0
+    elsif @player.bank.amount.zero?
       puts 'Player lost all his money'
-    elsif @dealer.bank.amount == 0
+    elsif @dealer.bank.amount.zero?
       puts 'Dealer lost all his money'
     else
       puts 'The has not finished yet'
