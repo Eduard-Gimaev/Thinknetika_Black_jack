@@ -6,7 +6,7 @@ require_relative 'bank'
 
 class Game
   include Constants
-  
+
   def initialize
     @player     = Player.new
     @dealer     = Player.new
@@ -16,7 +16,7 @@ class Game
   end
 
   def ask_user_name
-    while @player.name.empty? do
+    while @player.name.empty?
       print 'Enter your name: '
       @player.name = gets.chomp.capitalize
     end
@@ -28,14 +28,14 @@ class Game
       begin
         choice = gets.chomp
         case choice
-          when '0' then show_menu
-          when '1' then deal_cards
-          when '2' then take_card
-          when '3' then stand
-          when '4' then open_cards
-          when 'exit' then exit
+        when '0' then show_menu
+        when '1' then deal_cards
+        when '2' then take_card
+        when '3' then stand
+        when '4' then open_cards
+        when 'exit' then exit
         end
-      rescue => e
+      rescue StandardError => e
         puts "::ERROR:: #{e.message}"
       end
     end
@@ -60,9 +60,9 @@ class Game
       first_bet
       show_banks
       show_cards_and_values_hide
-      puts "=" * 30
+      puts '=' * 30
     else
-      puts "The game in the process...."
+      puts 'The game in the process....'
       ask_action
     end
   end
@@ -71,8 +71,9 @@ class Game
     puts "#{@player.name} bank: #{@player.bank.amount}"
     puts "Dealer's bank: #{@dealer.bank.amount}"
     puts "Game's bank: #{@game_bank.amount}"
-    puts "=" * 30
+    puts '=' * 30
   end
+
   def first_bet
     @player.bank.withdraw(10)
     @dealer.bank.withdraw(10)
@@ -97,55 +98,55 @@ class Game
         puts "You're burned out!"
         dealer_winner
       elsif @player.cards.count >= MAX_ALLOWED_CARDS
-      stand # the move switched to Dealer
+        stand # the move switched to Dealer
       end
     elsif @player.get_cards_value < 1
-      puts "Deal cards first, you cannot take a card now"
-      puts "=" * 30
+      puts 'Deal cards first, you cannot take a card now'
+      puts '=' * 30
     else
-      puts "Sorry, you cannot take a card"
-      puts "=" * 30
+      puts 'Sorry, you cannot take a card'
+      puts '=' * 30
     end
   end
 
   def stand
     puts "Dealer's move >>\n\n"
-      if @dealer.get_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
-        @dealer.add_card(@deck.give_card)
-        show_cards_and_values_hide
-        open_cards if @dealer.cards.count == MAX_ALLOWED_CARDS && @player.cards.count == MAX_ALLOWED_CARDS
-      elsif @dealer.get_cards_value > 21
-        player_winner 
-      else
-        open_cards
-      end
+    if @dealer.get_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
+      @dealer.add_card(@deck.give_card)
+      show_cards_and_values_hide
+      open_cards if @dealer.cards.count == MAX_ALLOWED_CARDS && @player.cards.count == MAX_ALLOWED_CARDS
+    elsif @dealer.get_cards_value > 21
+      player_winner
+    else
+      open_cards
+    end
   end
 
   def dealer_winner
-    puts "=" * 30
-    puts "  == Dealer won the game! =="
-    puts "=" * 30
+    puts '=' * 30
+    puts '  == Dealer won the game! =='
+    puts '=' * 30
     show_cards_and_values
-    puts "=" * 30
+    puts '=' * 30
     @dealer.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     show_banks
     check_game_ended(true)
   end
 
   def player_winner
-    puts "=" * 30
-    puts "  == Player won the game! =="
-    puts "=" * 30
+    puts '=' * 30
+    puts '  == Player won the game! =='
+    puts '=' * 30
     show_cards_and_values
-    puts "=" * 30
+    puts '=' * 30
     @player.bank.replenish(@game_bank.withdraw(@game_bank.amount))
     show_banks
     check_game_ended(true)
   end
 
   def stand_off
-    puts "Stand-off!"
-    puts "=" * 30
+    puts 'Stand-off!'
+    puts '=' * 30
     show_banks
     show_cards_and_values
     half_bank = @game_bank.amount / 2
@@ -177,9 +178,9 @@ class Game
     @game_bank.reset
     @player.reset_cards
     @dealer.reset_cards
-    puts "=" * 30
+    puts '=' * 30
     puts "Let's start a new game..."
-    puts "=" * 30
+    puts '=' * 30
     ask_action
   end
 
@@ -187,22 +188,22 @@ class Game
     puts '  == The game is over! ==  '
     puts 'Would you like to play again? (Y/N)'
     choice = gets.chomp.downcase
-      if choice == 'y'
-        restart!
-      elsif choice == 'n'
-        puts 'GAME OVER'
-        exit(0)
-      else
-        puts 'incorrect command choose(Y/N)'
-      end
+    if choice == 'y'
+      restart!
+    elsif choice == 'n'
+      puts 'GAME OVER'
+      exit(0)
+    else
+      puts 'incorrect command choose(Y/N)'
+    end
   end
 
   def check_game_ended(value)
     if game_ended?(value) == true && @player.bank.amount > 0 && @dealer.bank.amount > 0
       game_over
-    elsif @player.bank.amount == 0 
+    elsif @player.bank.amount == 0
       puts 'Player lost all his money'
-    elsif @dealer.bank.amount == 0 
+    elsif @dealer.bank.amount == 0
       puts 'Dealer lost all his money'
     else
       puts 'The has not finished yet'

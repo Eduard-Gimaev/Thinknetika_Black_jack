@@ -9,7 +9,7 @@ class Deck
   end
 
   def create_deck
-    SUITS.map{|suit| RANKS.map{|rank| Card.new(suit, rank)}}.flatten
+    SUITS.map { |suit| RANKS.map { |rank| Card.new(suit, rank) } }.flatten
   end
 
   def shuffle
@@ -19,7 +19,7 @@ class Deck
   def give_card
     @deck.pop
   end
-  
+
   def show_deck
     @deck.length
   end

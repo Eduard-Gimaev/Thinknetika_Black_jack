@@ -7,7 +7,7 @@ class Player
   attr_reader :cards, :bank
   attr_accessor :name
 
-  def initialize(initial_amount=INITIAL_PLAYER_BANK_AMOUNT)
+  def initialize(initial_amount = INITIAL_PLAYER_BANK_AMOUNT)
     @cards = []
     @bank  = Bank.new(initial_amount)
     @name  = ''
@@ -22,7 +22,7 @@ class Player
   end
 
   def count_aces
-    @cards.count {|c| c.rank == "A"}
+    @cards.count { |c| c.rank == 'A' }
   end
 
   def get_cards_value
@@ -30,7 +30,7 @@ class Player
     aces_quantity = count_aces
     if aces_quantity == 0
       @cards.each do |card|
-      total_value += VALUES[card.rank]
+        total_value += VALUES[card.rank]
       end
     else
       aces_quantity.times do
@@ -45,6 +45,6 @@ class Player
   end
 
   def show_cards_as_hidden
-    @cards.map { |card| card = '*'}.join('')
+    @cards.map { |_card| card = '*' }.join('')
   end
 end
