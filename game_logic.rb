@@ -187,16 +187,20 @@ class Game
   end
 
   def game_over
-    puts '  == The game is over! ==  '
+    puts '  == GAME OVER ==  '
     puts 'Would you like to play again? (Y/N)'
-    choice = gets.chomp.downcase
-    if choice == 'y'
-      restart!
-    elsif choice == 'n'
-      puts 'GAME OVER'
-      exit(0)
-    else
-      puts 'incorrect command choose(Y/N)'
+    loop do
+      begin
+        choice = gets.chomp.downcase
+        case choice
+        when 'y' then restart!
+        when 'n' then exit(0)
+        else
+          puts "there is no such command, try again"
+        end
+      rescue StandardError => e
+        puts "::ERROR:: #{e.message}"
+      end
     end
   end
 
