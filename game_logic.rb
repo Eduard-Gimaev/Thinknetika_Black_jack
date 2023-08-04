@@ -28,7 +28,7 @@ class Game
     loop do
       show_menu
       begin
-        choice = gets.chomp
+        choice = gets.chomp.downcase
         case choice
         when '0' then show_menu
         when '1' then deal_cards
@@ -97,16 +97,16 @@ class Game
       @player.add_card(@deck.give_card)
       show_cards_and_values_hide
       if @player.count_cards_value > 21
-        puts "You're burned out!"
+        puts "  == YOU ARE BURNT OUT! ==  "
         dealer_winner
       elsif @player.cards.count >= MAX_ALLOWED_CARDS
         stand # the move switched to Dealer
       end
     elsif @player.count_cards_value < 1
-      puts 'Deal cards first, you cannot take a card now'
+      puts ' = Deal cards first, you cannot take a card now = '
       puts '=' * 30
     else
-      puts 'Sorry, you cannot take a card'
+      puts ' = Sorry, you cannot take a card = '
       puts '=' * 30
     end
   end
@@ -126,7 +126,7 @@ class Game
 
   def dealer_winner
     puts '=' * 30
-    puts '  == Dealer won the game! =='
+    puts '  == DEALER IS THE WINNER! =='
     puts '=' * 30
     show_cards_and_values
     puts '=' * 30
@@ -137,7 +137,7 @@ class Game
 
   def player_winner
     puts '=' * 30
-    puts '  == Player won the game! =='
+    puts '  == PLAYER IS THE WINNER! =='
     puts '=' * 30
     show_cards_and_values
     puts '=' * 30
@@ -147,7 +147,7 @@ class Game
   end
 
   def stand_off
-    puts 'Stand-off!'
+    puts ' == Stand-off! == '
     puts '=' * 30
     show_banks
     show_cards_and_values
@@ -166,7 +166,7 @@ class Game
     elsif @dealer.count_cards_value > @player.count_cards_value
       dealer_winner
     else
-      puts "it's not time yet for openning cards"
+      puts " = it's not time yet for openning cards = "
     end
     check_game_ended(true)
   end
@@ -196,7 +196,7 @@ class Game
         when 'y' then restart!
         when 'n' then exit(0)
         else
-          puts "there is no such command, try again"
+          puts ' = there is no such command, try again = '
         end
       rescue StandardError => e
         puts "::ERROR:: #{e.message}"
@@ -208,11 +208,13 @@ class Game
     if game_ended?(value) == true && @player.bank.amount.positive? && @dealer.bank.amount.positive?
       game_over
     elsif @player.bank.amount.zero?
-      puts 'Player lost all his money'
+      puts '  == Player lost all his money ==  '
+      game_over
     elsif @dealer.bank.amount.zero?
-      puts 'Dealer lost all his money'
+      puts '  == Dealer lost all his money ==  '
+      game_over
     else
-      puts 'The has not finished yet'
+      puts '  == The game has not finished yet == '
     end
   end
 end

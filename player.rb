@@ -24,18 +24,16 @@ class Player
   end
 
   def count_aces
-    @cards.count { |c| c.rank == 'A' }
+    @cards.each { |card| card.rank == 'A' }
   end
 
-  def show_cards_value
-    total_value = 0
-    aces_quantity = count_aces
-    if aces_quantity.zero?
-      @cards.each { |card| total_value += VALUES[card.rank] }
-    else
-      aces_quantity.times { total_value += 10 if total_value + 10 <= 21 }
-    end
-    total_value
+  def count_cards_value
+    @points = 0
+    @cards.each do |card|      
+      @points += VALUES[card.rank]
+    end          
+    @points += 10 if self.count_aces.any?(/A/) && @points <= 11
+    @points
   end
 
   def show_cards
@@ -45,4 +43,8 @@ class Player
   def show_cards_as_hidden
     @cards.map { |_card| '*' }.join('')
   end
+
+  #def has_an_ace?
+    #@cards.rank.any?(/A/)
+  #end
 end
