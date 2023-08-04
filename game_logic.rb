@@ -25,9 +25,9 @@ class Game
   end
 
   def ask_action
+    
     loop do
       show_menu
-      begin
         choice = gets.chomp.downcase
         case choice
         when '0' then show_menu
@@ -36,10 +36,9 @@ class Game
         when '3' then stand
         when '4' then open_cards
         when 'exit' then exit
+        else
+          puts ' = there is no such command, try again = '
         end
-      rescue StandardError => e
-        puts "::ERROR:: #{e.message}"
-      end
     end
   end
 
@@ -97,7 +96,7 @@ class Game
       @player.add_card(@deck.give_card)
       show_cards_and_values_hide
       if @player.count_cards_value > 21
-        puts "  == YOU ARE BURNT OUT! ==  "
+        puts '  == YOU ARE BURNT OUT! ==  '
         dealer_winner
       elsif @player.cards.count >= MAX_ALLOWED_CARDS
         stand # the move switched to Dealer
@@ -147,7 +146,7 @@ class Game
   end
 
   def stand_off
-    puts ' == Stand-off! == '
+    puts ' == STAND-OFF! == '
     puts '=' * 30
     show_banks
     show_cards_and_values
@@ -190,17 +189,15 @@ class Game
     puts '  == GAME OVER ==  '
     puts 'Would you like to play again? (Y/N)'
     loop do
-      begin
-        choice = gets.chomp.downcase
-        case choice
-        when 'y' then restart!
-        when 'n' then exit(0)
-        else
-          puts ' = there is no such command, try again = '
-        end
-      rescue StandardError => e
-        puts "::ERROR:: #{e.message}"
+      choice = gets.chomp.downcase
+      case choice
+      when 'y' then restart!
+      when 'n' then exit(0)
+      else
+        puts ' = there is no such command, try again = '
       end
+    #rescue StandardError => e
+      #puts "::ERROR:: #{e.message}"
     end
   end
 
