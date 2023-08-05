@@ -24,8 +24,7 @@ class Player
   end
 
   def count_aces
-    @cards.each(&:rank)
-    # { |card| card.rank }
+    @cards.each(&:rank) # insted of { |card| card.rank }
   end
 
   def count_cards_value
@@ -42,6 +41,6 @@ class Player
   end
 
   def show_cards_as_hidden
-    @cards.map { |_card| '*' }.join('')
+    @cards.map { |card| '*' }.join('')
   end
 end

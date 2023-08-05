@@ -23,6 +23,6 @@ class Deck
   end
 
   def show_deck
-    @deck.length
+    @deck.each(&:rank)
   end
 end

@@ -25,20 +25,19 @@ class Game
   end
 
   def ask_action
-    
     loop do
       show_menu
-        choice = gets.chomp.downcase
-        case choice
-        when '0' then show_menu
-        when '1' then deal_cards
-        when '2' then take_card
-        when '3' then stand
-        when '4' then open_cards
-        when 'exit' then exit
-        else
-          puts ' = there is no such command, try again = '
-        end
+      choice = gets.chomp.downcase
+      case choice
+      when '0' then ask_action
+      when '1' then deal_cards
+      when '2' then take_card
+      when '3' then stand
+      when '4' then open_cards
+      when 'exit' then exit
+      else
+        puts ' = there is no such command, try again = '
+      end
     end
   end
 
@@ -55,7 +54,7 @@ class Game
   end
 
   def deal_cards
-    if @player.cards == [] && @dealer.cards == []
+    if @player.cards.empty? && @dealer.cards.empty?
       2.times { @player.cards << @deck.give_card }
       2.times { @dealer.cards << @deck.give_card }
       first_bet
@@ -196,8 +195,8 @@ class Game
       else
         puts ' = there is no such command, try again = '
       end
-    #rescue StandardError => e
-      #puts "::ERROR:: #{e.message}"
+      # rescue StandardError => e
+      # puts "::ERROR:: #{e.message}"
     end
   end
 
