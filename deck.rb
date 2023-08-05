@@ -22,7 +22,11 @@ class Deck
     @deck.pop
   end
 
-  def show_deck
+  def reset
+    @deck.clear
+  end
+
+  def show
     @deck.each(&:rank)
   end
 end

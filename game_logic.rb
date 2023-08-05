@@ -178,6 +178,7 @@ class Game
     @game_bank.reset
     @player.reset_cards
     @dealer.reset_cards
+    @deck = Deck.new
     puts '=' * 30
     puts "Let's start a new game..."
     puts '=' * 30
@@ -204,13 +205,18 @@ class Game
     if game_ended?(value) == true && @player.bank.amount.positive? && @dealer.bank.amount.positive?
       game_over
     elsif @player.bank.amount.zero?
-      puts '  == Player lost all his money ==  '
-      game_over
+      puts '  == PLAYER IS BANKRUPT!!! ==  '
+      puts '=' * 30
+      puts '  == GAME OVER ==  '
+      exit(0)
     elsif @dealer.bank.amount.zero?
-      puts '  == Dealer lost all his money ==  '
-      game_over
+      puts '  == DEALER IS BANKRUPT!!! ==  '
+      puts '=' * 30
+      puts '  == GAME OVER ==  '
+      exit(0)
     else
       puts '  == The game has not finished yet == '
+      puts '=' * 30
     end
   end
 end
