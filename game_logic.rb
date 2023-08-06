@@ -114,9 +114,12 @@ class Game
     if @dealer.count_cards_value < 17 && @dealer.cards.count < MAX_ALLOWED_CARDS
       @dealer.add_card(@deck.give_card)
       show_cards_and_values_hide
-      open_cards if @dealer.cards.count == MAX_ALLOWED_CARDS && @player.cards.count == MAX_ALLOWED_CARDS
-    elsif @dealer.count_cards_value > 21
+      if @dealer.cards.count == MAX_ALLOWED_CARDS && @player.cards.count == MAX_ALLOWED_CARDS
+        open_cards 
+      elsif @dealer.count_cards_value > 21
+      puts '  == DEALER IS BURNT OUT! ==  '
       player_winner
+      end
     else
       open_cards
     end
