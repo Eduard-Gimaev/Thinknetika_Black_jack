@@ -23,16 +23,17 @@ class Player
     @cards.clear
   end
 
-  def count_aces
-    @cards.each(&:rank) # insted of { |card| card.rank }
+  def has_an_ace?
+    @cards.each { |card| card.rank  == "A" }
   end
 
+  
   def count_cards_value
     @points = 0
     @cards.each do |card|
       @points += VALUES[card.rank]
     end
-    @points += 10 if count_aces.any?(/A/) && @points <= 11
+    @points += 10 if self.has_an_ace? && @points <= 11
     @points
   end
 
